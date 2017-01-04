@@ -140,7 +140,7 @@ public class EmergentTakingOrderController implements Initializable {
     }
 
     private void fillDishScrollPane() {
-        
+        ArrayList<String> auxiliar = new ArrayList<>();
         int i = 0;        
         for(Dish dish : Menu.getDISHES()){
             CheckBox checkBox = new CheckBox(dish.getDishName());
@@ -149,21 +149,60 @@ public class EmergentTakingOrderController implements Initializable {
             checkBox.setOnAction((ActionEvent e) ->{
                 if(checkBox.isSelected())
                    seeFoodAndDrinksAdded.appendText(dish.getDishName() + "\n");
-                else
-                    for(String string : seeFoodAndDrinksAdded.getText().split("\\n")){
-                        if(string.equals(checkBox.getText()))
-                            seeFoodAndDrinksAdded.replaceSelection("");
-                    }
+                else{
+                    /**
+                     * Para 'borrar' el elemento deseleccionado
+                     */
+                    for(String string : seeFoodAndDrinksAdded.getText().split("\\n"))
+                        if(!string.equals(checkBox.getText()))
+                            auxiliar.add(string);
+                    
+                    // se limpia el textArea
+                    seeFoodAndDrinksAdded.clear();
+                    /**
+                     * Para actualiza el textarea                     
+                     */                   
+                    for(String string : auxiliar)
+                        seeFoodAndDrinksAdded.appendText(string + "\n");
+                    
+                    // se limpia el ArrayList también
+                    auxiliar.clear();                    
+                }                    
             });
         }
     }
 
     private void fillDrinkScrollPane() {
+        ArrayList<String> auxiliar = new ArrayList<>();
         int i = 0;
         for(Drink drink : Menu.getDRINKS()){
             CheckBox checkBox = new CheckBox(drink.getName());
             drinkScrollGrid.add(checkBox,0,i);
             i += 2;
+            checkBox.setOnAction((ActionEvent e) ->{
+                if(checkBox.isSelected())
+                   seeFoodAndDrinksAdded.appendText(drink.getName() + "\n");
+                else{
+                    /**
+                     * Para 'borrar' el elemento deseleccionado
+                     */
+                    for(String string : seeFoodAndDrinksAdded.getText().split("\\n"))
+                        if(!string.equals(checkBox.getText()))
+                            auxiliar.add(string);
+                    
+                    // se limpia el textArea
+                    seeFoodAndDrinksAdded.clear();
+                    /**
+                     * Para actualiza el textarea                     
+                     */                   
+                    for(String string : auxiliar)
+                        seeFoodAndDrinksAdded.appendText(string + "\n");
+                    
+                    // se limpia el ArrayList también
+                    auxiliar.clear();                    
+                }                    
+            });
         }
+        
     }
 }

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.*?>
+<?import javafx.scene.text.*?>
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane id="AnchorPane" prefHeight="602.0" prefWidth="756.0" style="-fx-background-color: #272623;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="UI.CancelledController">
+   <children>
+      <TableView fx:id="cancelledOrders" layoutX="86.0" layoutY="60.0" prefHeight="454.0" prefWidth="582.0">
+        <columns>
+          <TableColumn fx:id="tableNumber" prefWidth="75.0" text="# Mesa" />
+          <TableColumn fx:id="orderNumber" prefWidth="75.0" text="# Orden" />
+            <TableColumn fx:id="dishes" prefWidth="129.0" text="Platillos" />
+            <TableColumn fx:id="drinks" prefWidth="119.0" text="Bebidas" />
+            <TableColumn fx:id="waiterID" prefWidth="183.0" text="ID Mesero" />
+        </columns>
+      </TableView>
+      <Text layoutX="246.0" layoutY="50.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Ordenes Canceladas">
+         <font>
+            <Font size="27.0" />
+         </font>
+      </Text>
+      <JFXButton buttonType="RAISED" cancelButton="true" layoutX="362.0" layoutY="547.0" onAction="#closeButtonAction" style="-fx-background-color: White;" text="OK" />
+   </children>
+</AnchorPane>

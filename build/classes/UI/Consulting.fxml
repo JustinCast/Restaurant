@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import com.jfoenix.controls.*?>
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane id="AnchorPane" prefHeight="613.0" prefWidth="813.0" style="-fx-background-color: #272623;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="UI.ConsultingController">
+   <children>
+      <TabPane layoutX="7.0" layoutY="78.0" prefHeight="471.0" prefWidth="798.0" tabClosingPolicy="UNAVAILABLE">
+        <tabs>
+          <Tab text="Platos Vendidos">
+            <content>
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" style="-fx-background-color: #F4F6F6;">
+                     <children>
+                        <JFXTextArea fx:id="sellDishes" layoutY="123.0" maxWidth="754.0" minWidth="632.0" prefHeight="319.0" prefWidth="754.0" />
+                        <DatePicker fx:id="dishesDate" layoutX="290.0" layoutY="67.0" onAction="#loadSellDishes" />
+                        <Text fx:id="totalDishes" layoutX="586.0" layoutY="87.0" strokeLineCap="ROUND" strokeType="OUTSIDE" strokeWidth="0.0" text="Total: " underline="true" wrappingWidth="81.0">
+                           <font>
+                              <Font size="20.0" />
+                           </font>
+                        </Text>
+                     </children>
+                  </AnchorPane>
+            </content>
+          </Tab>
+          <Tab text="Bebidas Vendidas">
+            <content>
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" style="-fx-background-color: #F4F6F6;">
+                     <children>
+                        <JFXTextArea fx:id="sellDrinks" editable="false" layoutY="123.0" maxWidth="754.0" minWidth="598.0" prefHeight="319.0" prefWidth="754.0" />
+                        <DatePicker fx:id="drinksDate" layoutX="290.0" layoutY="67.0" onAction="#loadSellDrinks" />
+                        <Text fx:id="totalDrinks" layoutX="586.0" layoutY="87.0" strokeLineCap="ROUND" strokeType="OUTSIDE" strokeWidth="0.0" text="Total: " underline="true" wrappingWidth="81.0">
+                           <font>
+                              <Font size="20.0" />
+                           </font>
+                        </Text>
+                     </children>
+                  </AnchorPane>
+            </content>
+          </Tab>
+            <Tab text="Total Vendido por Mes">
+              <content>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" style="-fx-background-color: #F4F6F6;">
+                     <children>
+                        <JFXTextArea fx:id="sellPerMonth" layoutY="123.0" maxWidth="754.0" minWidth="754.0" prefHeight="319.0" prefWidth="754.0" />
+                        <DatePicker fx:id="totalSellMonthDate" layoutX="290.0" layoutY="67.0" onAction="#totalSellPerMonth" />
+                        <Text fx:id="totalPerMonth" layoutX="586.0" layoutY="87.0" strokeLineCap="ROUND" strokeType="OUTSIDE" strokeWidth="0.0" text="Total: " underline="true" wrappingWidth="81.0">
+                           <font>
+                              <Font size="20.0" />
+                           </font>
+                        </Text>
+                     </children>
+                  </AnchorPane>
+              </content>
+            </Tab>
+            <Tab text="Total Vendido Por año">
+              <content>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" style="-fx-background-color: #F4F6F6;">
+                     <children>
+                        <JFXTextArea layoutY="123.0" maxWidth="754.0" minWidth="754.0" prefHeight="319.0" prefWidth="754.0" />
+                        <JFXTextArea fx:id="sellPerYear" layoutY="123.0" maxWidth="754.0" minWidth="517.0" prefHeight="319.0" prefWidth="754.0" />
+                        <DatePicker fx:id="totalSellYearDate" layoutX="290.0" layoutY="67.0" onAction="#totalSellPerYear" />
+                        <Text fx:id="totalPerYear" layoutX="586.0" layoutY="87.0" strokeLineCap="ROUND" strokeType="OUTSIDE" strokeWidth="0.0" text="Total: " underline="true" wrappingWidth="81.0">
+                           <font>
+                              <Font size="20.0" />
+                           </font>
+                        </Text>
+                     </children>
+                  </AnchorPane>
+              </content>
+            </Tab>
+            <Tab text="Clientes atendidos por Mes">
+              <content>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" style="-fx-background-color: #F4F6F6;">
+                     <children>
+                        <JFXTextArea fx:id="customersAtendedPerMonth" layoutY="123.0" maxWidth="754.0" minWidth="754.0" prefHeight="319.0" prefWidth="754.0" />
+                        <DatePicker fx:id="customersPerMonthDate" layoutX="290.0" layoutY="67.0" onAction="#totalAtendedPerMonth" />
+                        <Text fx:id="customersPerMonth" layoutX="586.0" layoutY="87.0" strokeLineCap="ROUND" strokeType="OUTSIDE" strokeWidth="0.0" text="Total: " underline="true" wrappingWidth="81.0">
+                           <font>
+                              <Font size="20.0" />
+                           </font>
+                        </Text>
+                     </children>
+                  </AnchorPane>
+              </content>
+            </Tab>
+            <Tab text="Clientes atendidos por año">
+              <content>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" style="-fx-background-color: #F4F6F6;">
+                     <children>
+                        <JFXTextArea fx:id="customersAtendedPerYear" layoutY="123.0" maxWidth="754.0" minWidth="754.0" prefHeight="319.0" prefWidth="754.0" />
+                        <DatePicker fx:id="customersPerYearDate" layoutX="290.0" layoutY="67.0" onAction="#totalAtendedPerYear" />
+                        <Text fx:id="customersPerYear" layoutX="586.0" layoutY="87.0" strokeLineCap="ROUND" strokeType="OUTSIDE" strokeWidth="0.0" text="Total: " underline="true" wrappingWidth="81.0">
+                           <font>
+                              <Font size="20.0" />
+                           </font>
+                        </Text>
+                     </children>
+                  </AnchorPane>
+              </content>
+            </Tab>
+        </tabs>
+      </TabPane>
+      <JFXButton buttonType="RAISED" layoutX="368.0" layoutY="574.0" onAction="#loadSellDishes" ripplerFill="#ff0505" style="-fx-background-color: White;" text="Ok">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </JFXButton>
+   </children>
+</AnchorPane>

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import com.jfoenix.controls.*?>
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane id="AnchorPane" fx:id="employeesPane" prefHeight="654.0" prefWidth="1161.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="UI.EmployeesController">
+   <children>
+      <TabPane layoutX="16.0" layoutY="25.0" prefHeight="395.0" prefWidth="1126.0" tabClosingPolicy="UNAVAILABLE">
+        <tabs>
+          <Tab text="Cocineros">
+            <content>
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="328.0" prefWidth="608.0">
+                     <children>
+                        <TableView fx:id="chefTable" layoutY="-1.0" prefHeight="361.0" prefWidth="1126.0">
+                          <columns>
+                            <TableColumn fx:id="chefName" prefWidth="207.0" text="Nombre" />
+                            <TableColumn fx:id="chefID" prefWidth="221.0" text="Identificacion" />
+                              <TableColumn fx:id="chefTelephone" prefWidth="207.0" text="Telefono" />
+                              <TableColumn fx:id="chefAddress" prefWidth="250.0" text="Direccion" />
+                              <TableColumn fx:id="chefEmail" prefWidth="240.0" text="Email" />
+                          </columns>
+                        </TableView>
+                     </children></AnchorPane>
+            </content>
+          </Tab>
+          <Tab text="Meseros">
+            <content>
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <TableView fx:id="waiterTable" layoutX="1.0" layoutY="-2.0" prefHeight="359.0" prefWidth="1126.0">
+                          <columns>
+                            <TableColumn fx:id="waiterName" prefWidth="172.0" text="Nombre" />
+                            <TableColumn fx:id="waiterID" prefWidth="158.0" text="Identificacion" />
+                              <TableColumn fx:id="waiterTelephone" prefWidth="180.0" text="Telefono" />
+                              <TableColumn fx:id="waiterAddress" prefWidth="201.0" text="Direccion" />
+                              <TableColumn fx:id="waiterEmail" prefWidth="182.0" text="Email" />
+                              <TableColumn fx:id="waiterLanguages" prefWidth="232.0" text="Idiomas" />
+                          </columns>
+                        </TableView>
+                     </children></AnchorPane>
+            </content>
+          </Tab>
+        </tabs>
+      </TabPane>
+      <JFXButton fx:id="addEmployee" buttonType="RAISED" layoutX="511.0" layoutY="499.0" onAction="#showDialog" prefHeight="22.0" prefWidth="136.0" ripplerFill="WHITE" style="-fx-background-color: #138D75;" text="Agregar Empleado" textFill="WHITE">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </JFXButton>
+      <JFXButton buttonType="RAISED" layoutX="687.0" layoutY="499.0" onAction="#openMenu" prefHeight="30.0" prefWidth="89.0" ripplerFill="WHITE" style="-fx-background-color: #138D75;" text="Ir al Menu" textFill="WHITE">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </JFXButton>
+   </children>
+</AnchorPane>

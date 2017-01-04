@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.effect.*?>
+<?import javafx.scene.text.*?>
+<?import com.jfoenix.controls.*?>
+<?import java.lang.*?>
+<?import java.net.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane id="AnchorPane" fx:id="menuPane" prefHeight="610.0" prefWidth="1026.0" stylesheets="@styles/menu.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="UI.MenuController">
+   <children>
+      <TabPane layoutX="163.0" layoutY="64.0" prefHeight="469.0" prefWidth="701.0" tabClosingPolicy="UNAVAILABLE">
+        <tabs>
+          <Tab text="Platillos">
+            <content>
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="275.0" prefWidth="256.0">
+                     <children>
+                        <TableView fx:id="DishTable" prefHeight="443.0" prefWidth="701.0">
+                          <columns>
+                            <TableColumn fx:id="number" prefWidth="49.0" text="#" />
+                            <TableColumn fx:id="DishName" prefWidth="155.0" text="Nombre" />
+                              <TableColumn fx:id="ingredientsColumn" prefWidth="243.0" text="Ingredientes" />
+                              <TableColumn fx:id="PriceWithoutTax" prefWidth="127.0" text="Precio sin impuestos" />
+                              <TableColumn fx:id="calories" prefWidth="126.0" text="Calorias" />
+                          </columns>
+                        </TableView>
+                     </children>
+                  </AnchorPane>
+            </content>
+          </Tab>
+          <Tab text="Bebidas">
+            <content>
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <TableView fx:id="DrinkTable" prefHeight="441.0" prefWidth="701.0">
+                          <columns>
+                            <TableColumn fx:id="type" prefWidth="150.0" text="Tipo" />
+                            <TableColumn fx:id="DrinkName" prefWidth="255.0" text="Nombre" />
+                              <TableColumn fx:id="price" prefWidth="150.0" text="Precio" />
+                              <TableColumn fx:id="MlSize" prefWidth="145.0" text="Tamaño ml" />
+                          </columns>
+                        </TableView>
+                     </children>
+                  </AnchorPane>
+            </content>
+          </Tab>
+        </tabs>
+      </TabPane>
+      <Text fill="WHITE" fontSmoothingType="LCD" layoutX="447.0" layoutY="42.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Menu Principal" textAlignment="CENTER" wrappingWidth="143.13671875">
+         <font>
+            <Font size="18.0" />
+         </font>
+         <effect>
+            <Glow />
+         </effect>
+      </Text>
+      <JFXButton buttonType="RAISED" layoutX="749.0" layoutY="547.0" onAction="#seeTables" style="-fx-background-color: #138D75;" text="Ver Mesas" textFill="WHITE">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </JFXButton>
+      <JFXButton buttonType="RAISED" layoutX="915.0" layoutY="547.0" onAction="#OK" style="-fx-background-color: linear-gradient(#ff5400, #FF0400); -fx-background-radius: 30;" text="Ok" textFill="WHITE">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </JFXButton>
+      <JFXButton buttonType="RAISED" layoutX="24.0" layoutY="32.0" onAction="#seeRestaurant" style="-fx-background-color: #138D75;" text="Ver Restaurante " textFill="WHITE">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </JFXButton>
+      <MenuButton layoutX="163.0" layoutY="547.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="143.0" style="-fx-background-color: #138D75;" text="Acciones en el Menu" textFill="WHITE">
+        <items>
+          <MenuItem mnemonicParsing="false" onAction="#addDish" text="Agregar Platillo" />
+          <MenuItem mnemonicParsing="false" onAction="#addDrink" text="Agregar Bebida" />
+            <MenuItem mnemonicParsing="false" onAction="#deleteDish" text="Eliminar Platillo" />
+            <MenuItem mnemonicParsing="false" onAction="#deleteDrink" text="Eliminar Bebida" />
+        </items>
+      </MenuButton>
+      <MenuButton alignment="CENTER" contentDisplay="CENTER" layoutX="336.0" layoutY="547.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="143.0" style="-fx-background-color: #138D75;" text="Ordenes..." textAlignment="RIGHT" textFill="WHITE">
+         <items>
+            <MenuItem mnemonicParsing="false" onAction="#openEmergentOrder" text="Tomar Orden" />
+            <MenuItem mnemonicParsing="false" onAction="#takeAnotherOrder" text="Agregar Orden" />
+         </items>
+      </MenuButton>
+   </children>
+   <effect>
+      <InnerShadow />
+   </effect>
+</AnchorPane>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import com.jfoenix.controls.*?>
+<?import java.lang.*?>
+<?import java.net.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane id="AnchorPane" fx:id="init" prefHeight="554.0" prefWidth="689.0" stylesheets="@styles/Home.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="UI.InitController">
+   <children>
+      <JFXButton fx:id="btnTakeOrder" buttonType="RAISED" cancelButton="true" layoutX="294.0" layoutY="161.0" onAction="#openOrder" prefHeight="38.0" prefWidth="124.0" style="-fx-background-color: #EC7063;" text="Tomar Orden" textFill="WHITE">
+         <font>
+            <Font size="17.0" />
+         </font>
+      </JFXButton>
+      <JFXButton buttonType="RAISED" layoutX="307.0" layoutY="428.0" onAction="#openRegistration" prefHeight="38.0" prefWidth="98.0" style="-fx-background-color: #EC7063;" text="Registro" textFill="WHITE">
+         <font>
+            <Font size="17.0" />
+         </font>
+      </JFXButton>
+      <JFXButton buttonType="RAISED" layoutX="14.0" layoutY="14.0" onAction="#developer" prefHeight="25.0" prefWidth="116.0" style="-fx-background-color: #B03A2E; -fx-background-radius: 30;" text="Desarrollador" textFill="WHITE">
+         <font>
+            <Font size="15.0" />
+         </font></JFXButton>
+   </children>
+</AnchorPane>

@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<AnchorPane id="AnchorPane" fx:id="emergentPane" prefHeight="573.0" prefWidth="655.0" stylesheets="@styles/emergentCss.css" xmlns="http://javafx.com/javafx/8.0.102" xmlns:fx="http://javafx.com/fxml/1" fx:controller="UI.EmergentTakingOrderController">
+   <children>
+      <TextArea fx:id="seeFoodAndDrinksAdded" layoutX="160.0" layoutY="295.0" prefHeight="200.0" prefWidth="336.0" />
+      <JFXButton buttonType="RAISED" layoutX="224.0" layoutY="508.0" ripplerFill="WHITE" style="-fx-background-color: #138D75;" text="Aceptar" textFill="WHITE">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </JFXButton>
+      <JFXButton buttonType="RAISED" layoutX="369.0" layoutY="508.0" ripplerFill="WHITE" style="-fx-background-color: #138D75;" text="Cancelar" textFill="WHITE">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </JFXButton>
+      <ComboBox fx:id="orderNumberCmbx" layoutX="231.0" layoutY="35.0" prefWidth="150.0" promptText="Numero de Orden" />
+      <ScrollPane layoutX="92.0" layoutY="95.0" prefHeight="200.0" prefWidth="200.0">
+        <content>
+          <AnchorPane fx:id="dishPane" minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="200.0">
+               <children>
+                  <GridPane fx:id="dishScrollGrid" layoutX="5.0" layoutY="4.0" prefHeight="59.0" prefWidth="173.0">
+                    <columnConstraints>
+                      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                    </columnConstraints>
+                    <rowConstraints>
+                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    </rowConstraints>
+                  </GridPane>
+               </children>
+            </AnchorPane>
+        </content>
+      </ScrollPane>
+      <ScrollPane layoutX="369.0" layoutY="95.0" prefHeight="200.0" prefWidth="200.0">
+         <content>
+            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="200.0">
+               <children>
+                  <GridPane fx:id="drinkScrollGrid" layoutX="6.0" layoutY="5.0" prefHeight="175.0" prefWidth="182.0">
+                     <columnConstraints>
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                     </columnConstraints>
+                     <rowConstraints>
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                     </rowConstraints>
+                  </GridPane>
+               </children>
+            </AnchorPane>
+         </content>
+      </ScrollPane>
+      <Text fill="WHITE" layoutX="155.0" layoutY="93.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Platillos" textAlignment="JUSTIFY">
+         <font>
+            <Font size="22.0" />
+         </font>
+      </Text>
+      <Text fill="WHITE" layoutX="431.0" layoutY="93.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Bebidas">
+         <font>
+            <Font size="22.0" />
+         </font>
+      </Text>
+   </children>
+</AnchorPane>

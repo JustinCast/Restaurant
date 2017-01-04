@@ -5,8 +5,6 @@
  */
 package UI;
 
-import com.jfoenix.controls.JFXCheckBox;
-import com.jfoenix.controls.JFXRadioButton;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +13,6 @@ import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
@@ -23,9 +20,9 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceDialog;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextArea;
-import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.text.Text;
 import javax.swing.JOptionPane;
 import restaurant_service.Dish;
 import restaurant_service.Drink;
@@ -46,7 +43,8 @@ public class EmergentTakingOrderController implements Initializable {
     @FXML private GridPane dishScrollGrid;
     @FXML private GridPane drinkScrollGrid;
     @FXML private AnchorPane dishPane;
-    
+    @FXML private Text totalText;
+    private int total = 0;
     /**
      * Initializes the controller class.
      * @param url
@@ -140,6 +138,7 @@ public class EmergentTakingOrderController implements Initializable {
     }
 
     private void fillDishScrollPane() {
+        totalText.setText("");
         ArrayList<String> auxiliar = new ArrayList<>();
         int i = 0;        
         for(Dish dish : Menu.getDISHES()){
@@ -147,16 +146,20 @@ public class EmergentTakingOrderController implements Initializable {
             dishScrollGrid.add(checkBox,0,i);           
             i += 2;            
             checkBox.setOnAction((ActionEvent e) ->{
-                if(checkBox.isSelected())
+                if(checkBox.isSelected()){
                    seeFoodAndDrinksAdded.appendText(dish.getDishName() + "\n");
+                   total += Menu.searchDishByName(checkBox.getText()).getPriceWihtoutTax(); //se aumenta el total
+                }
                 else{
                     /**
                      * Para 'borrar' el elemento deseleccionado
                      */
-                    for(String string : seeFoodAndDrinksAdded.getText().split("\\n"))
+                    for(String string : seeFoodAndDrinksAdded.getText().split("\\n")){
                         if(!string.equals(checkBox.getText()))
                             auxiliar.add(string);
-                    
+                        else
+                            total -=Menu.searchDishByName(checkBox.getText()).getPriceWihtoutTax(); //se disminuye el total
+                    }
                     // se limpia el textArea
                     seeFoodAndDrinksAdded.clear();
                     /**
@@ -167,12 +170,14 @@ public class EmergentTakingOrderController implements Initializable {
                     
                     // se limpia el ArrayList también
                     auxiliar.clear();                    
-                }                    
+                }         
+                totalText.setText("Total: ¢" + String.valueOf(total));
             });
         }
     }
 
     private void fillDrinkScrollPane() {
+        totalText.setText("");
         ArrayList<String> auxiliar = new ArrayList<>();
         int i = 0;
         for(Drink drink : Menu.getDRINKS()){
@@ -180,27 +185,33 @@ public class EmergentTakingOrderController implements Initializable {
             drinkScrollGrid.add(checkBox,0,i);
             i += 2;
             checkBox.setOnAction((ActionEvent e) ->{
-                if(checkBox.isSelected())
+                if(checkBox.isSelected()){
                    seeFoodAndDrinksAdded.appendText(drink.getName() + "\n");
+                   total += Menu.searchDrink(drink.getName()).getPrice(); //se aumenta el total
+                }
                 else{
                     /**
                      * Para 'borrar' el elemento deseleccionado
                      */
-                    for(String string : seeFoodAndDrinksAdded.getText().split("\\n"))
+                    for(String string : seeFoodAndDrinksAdded.getText().split("\\n")){
                         if(!string.equals(checkBox.getText()))
                             auxiliar.add(string);
+                        else
+                            total -= Menu.searchDrink(string).getPrice(); // se disminuye el total 
+                    }
                     
                     // se limpia el textArea
                     seeFoodAndDrinksAdded.clear();
                     /**
                      * Para actualiza el textarea                     
                      */                   
-                    for(String string : auxiliar)
-                        seeFoodAndDrinksAdded.appendText(string + "\n");
-                    
+                    for(String string : auxiliar){
+                        seeFoodAndDrinksAdded.appendText(string + "\n");                        
+                    }
                     // se limpia el ArrayList también
-                    auxiliar.clear();                    
-                }                    
+                    auxiliar.clear();                                          
+                }   
+                totalText.setText("Total: ¢" + String.valueOf(total));
             });
         }
         

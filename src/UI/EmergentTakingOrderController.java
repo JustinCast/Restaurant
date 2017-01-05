@@ -13,13 +13,17 @@ import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
 import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceDialog;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Spinner;
 import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.text.Text;
@@ -42,8 +46,11 @@ public class EmergentTakingOrderController implements Initializable {
     @FXML private TextArea seeFoodAndDrinksAdded;  
     @FXML private GridPane dishScrollGrid;
     @FXML private GridPane drinkScrollGrid;
-    @FXML private AnchorPane dishPane;
     @FXML private Text totalText;
+    @FXML private TextField textFieldSearchDish;
+    @FXML private TextField textFieldSearchDrink;
+    @FXML private Button btnSearchDish;
+    @FXML private Button btnSearchDrink;
     private int total = 0;
     /**
      * Initializes the controller class.
@@ -63,6 +70,11 @@ public class EmergentTakingOrderController implements Initializable {
         fillDishScrollPane();
         fillDrinkScrollPane();
         seeFoodAndDrinksAdded.setEditable(false);
+        btnSearchDish.setStyle("-fx-background-image: url('/UI/images/search.png'); -fx-background-repeat: no-repeat;"
+                + " -fx-background-radius: 30; background-position: center");
+        btnSearchDrink.setStyle("-fx-background-image: url('/UI/images/search.png'); -fx-background-repeat: no-repeat;"
+                + " -fx-background-radius: 30; background-position: center");
+
     }    
     
     public void takeOrder(){                    
@@ -143,14 +155,36 @@ public class EmergentTakingOrderController implements Initializable {
         int i = 0;        
         for(Dish dish : Menu.getDISHES()){
             CheckBox checkBox = new CheckBox(dish.getDishName());
-            dishScrollGrid.add(checkBox,0,i);           
-            i += 2;            
+            dishScrollGrid.add(checkBox,0,i);  
+            
+            Spinner spinner = new Spinner(1, 10, 1);
+            spinner.setId(checkBox.getText());    //CREACIÓN Y MANEJO DEL SPINNER
+            spinner.setDisable(true);
+            dishScrollGrid.add(spinner,1,i); 
+            
+            i += 1;            
             checkBox.setOnAction((ActionEvent e) ->{
-                if(checkBox.isSelected()){
-                   seeFoodAndDrinksAdded.appendText(dish.getDishName() + "\n");
-                   total += Menu.searchDishByName(checkBox.getText()).getPriceWihtoutTax(); //se aumenta el total
+                if(checkBox.isSelected()){                   
+                    seeFoodAndDrinksAdded.appendText(dish.getDishName() + "\n");
+                    total += Menu.searchDishByName(checkBox.getText()).getPriceWihtoutTax(); //se aumenta el total
+                    
+                    //desactiva el spinner correspondiente al platillo
+                    dishScrollGrid.getChildren().stream().forEach((Node tmp) -> {
+                        if(tmp instanceof Spinner) // se verifica la instancia, ya que los checkbox no poseen ID
+                            if(tmp.getId().equals(checkBox.getText()))                       
+                                tmp.setDisable(false);                                                    
+                    });
                 }
                 else{
+                    //activa el spinner correspondiente al platillo
+                    dishScrollGrid.getChildren().stream().forEach((Node tmp) -> {
+                        if(tmp instanceof Spinner) // se verifica la instancia, ya que los checkbox no poseen ID
+                            if(tmp.getId().equals(checkBox.getText())){                      
+                                tmp.setDisable(true);
+                                ((Spinner) tmp).decrement(Integer.parseInt(((Spinner)tmp).getValue().toString())); //funciona como un reset
+                            }
+                            
+                    });
                     /**
                      * Para 'borrar' el elemento deseleccionado
                      */
@@ -178,18 +212,40 @@ public class EmergentTakingOrderController implements Initializable {
 
     private void fillDrinkScrollPane() {
         totalText.setText("");
+        drinkScrollGrid.setMinSize(2, 2);
         ArrayList<String> auxiliar = new ArrayList<>();
         int i = 0;
         for(Drink drink : Menu.getDRINKS()){
-            CheckBox checkBox = new CheckBox(drink.getName());
-            drinkScrollGrid.add(checkBox,0,i);
-            i += 2;
+            CheckBox checkBox = new CheckBox(drink.getName());            
+            drinkScrollGrid.add(checkBox,0,i);            
+            Spinner spinner = new Spinner(1, 10, 1);
+            spinner.setId(checkBox.getText());       //CREACIÓN Y MANEJO DEL SPINNER
+            spinner.setDisable(true);
+            drinkScrollGrid.add(spinner,1,i); 
+            
+            i += 1;
             checkBox.setOnAction((ActionEvent e) ->{
                 if(checkBox.isSelected()){
                    seeFoodAndDrinksAdded.appendText(drink.getName() + "\n");
                    total += Menu.searchDrink(drink.getName()).getPrice(); //se aumenta el total
+                   
+                   //desactiva el spinner correspondiente al platillo
+                    drinkScrollGrid.getChildren().stream().forEach((Node tmp) -> {
+                        if(tmp instanceof Spinner) // se verifica la instancia, ya que los checkbox no poseen ID
+                            if(tmp.getId().equals(checkBox.getText()))                       
+                                tmp.setDisable(false);                                                    
+                    });
                 }
                 else{
+                    //activa el spinner correspondiente al platillo
+                    drinkScrollGrid.getChildren().stream().forEach((Node tmp) -> {
+                        if(tmp instanceof Spinner) // se verifica la instancia, ya que los checkbox no poseen ID
+                            if(tmp.getId().equals(checkBox.getText())){                      
+                                tmp.setDisable(true);
+                                ((Spinner) tmp).decrement(Integer.parseInt(((Spinner)tmp).getValue().toString())); //funciona como un reset
+                            }
+                            
+                    });
                     /**
                      * Para 'borrar' el elemento deseleccionado
                      */

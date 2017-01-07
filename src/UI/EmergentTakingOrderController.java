@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -21,6 +22,7 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceDialog;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
@@ -51,6 +53,8 @@ public class EmergentTakingOrderController implements Initializable {
     @FXML private TextField textFieldSearchDrink;
     @FXML private Button btnSearchDish;
     @FXML private Button btnSearchDrink;
+    @FXML private ContextMenu dishContextMenu;
+    @FXML private ContextMenu drinkContextMenu;
     private int total = 0;
     /**
      * Initializes the controller class.
@@ -159,117 +163,176 @@ public class EmergentTakingOrderController implements Initializable {
             
             Spinner spinner = new Spinner(1, 10, 1);
             spinner.setId(checkBox.getText());    //CREACIÓN Y MANEJO DEL SPINNER
-            spinner.setDisable(true);
+            spinner.setDisable(true);            
             dishScrollGrid.add(spinner,1,i); 
             
             i += 1;            
             checkBox.setOnAction((ActionEvent e) ->{
                 if(checkBox.isSelected()){                   
                     seeFoodAndDrinksAdded.appendText(dish.getDishName() + "\n");
-                    total += Menu.searchDishByName(checkBox.getText()).getPriceWihtoutTax(); //se aumenta el total
                     
-                    //desactiva el spinner correspondiente al platillo
-                    dishScrollGrid.getChildren().stream().forEach((Node tmp) -> {
-                        if(tmp instanceof Spinner) // se verifica la instancia, ya que los checkbox no poseen ID
-                            if(tmp.getId().equals(checkBox.getText()))                       
-                                tmp.setDisable(false);                                                    
-                    });
-                }
-                else{
                     //activa el spinner correspondiente al platillo
                     dishScrollGrid.getChildren().stream().forEach((Node tmp) -> {
                         if(tmp instanceof Spinner) // se verifica la instancia, ya que los checkbox no poseen ID
-                            if(tmp.getId().equals(checkBox.getText())){                      
-                                tmp.setDisable(true);
-                                ((Spinner) tmp).decrement(Integer.parseInt(((Spinner)tmp).getValue().toString())); //funciona como un reset
+                            if(tmp.getId().equals(checkBox.getText()))  {                     
+                                tmp.setDisable(false);      
+                                total += Menu.searchDishByName(checkBox.getText()).getPriceWihtoutTax()
+                                        * Integer.parseInt(((Spinner)tmp).getValue().toString()); //se multiplica por el valor del spinner
                             }
-                            
-                    });
+                    });                    
+                }
+                else{                    
                     /**
                      * Para 'borrar' el elemento deseleccionado
                      */
                     for(String string : seeFoodAndDrinksAdded.getText().split("\\n")){
                         if(!string.equals(checkBox.getText()))
                             auxiliar.add(string);
-                        else
-                            total -=Menu.searchDishByName(checkBox.getText()).getPriceWihtoutTax(); //se disminuye el total
+                        
+                        else{   
+                            //desactiva el spinner correspondiente al platillo
+                            dishScrollGrid.getChildren().stream().forEach((Node tmp) -> {
+                            if(tmp instanceof Spinner) // se verifica la instancia, ya que los checkbox no poseen ID
+                                if(tmp.getId().equals(checkBox.getText())){    
+                                    if(Integer.parseInt(((Spinner) tmp).getValue().toString()) > 1)//se le suma por el problema de restar
+                                        total += Menu.searchDishByName(checkBox.getText()).getPriceWihtoutTax();//el valor del platillo o bebida
+                                    total -= Menu.searchDishByName(checkBox.getText()).getPriceWihtoutTax() *
+                                            Integer.parseInt(((Spinner)tmp).getValue().toString()); //se disminuye                                    
+                                    ((Spinner) tmp).getValueFactory().setValue(1); //funciona como un reset
+                                    tmp.setDisable(true); 
+                                }                            
+                            });
+                        }
                     }
                     // se limpia el textArea
                     seeFoodAndDrinksAdded.clear();
                     /**
-                     * Para actualiza el textarea                     
+                     * Para actualizar el textarea                     
                      */                   
                     for(String string : auxiliar)
                         seeFoodAndDrinksAdded.appendText(string + "\n");
                     
                     // se limpia el ArrayList también
                     auxiliar.clear();                    
-                }         
+                }   
                 totalText.setText("Total: ¢" + String.valueOf(total));
+            });
+            
+            /**
+             * Método para manejo de incremento - decremento del spinner
+             */
+            spinner.valueProperty().addListener((ObservableValue observable, Object oldValue, Object newValue) -> {
+                if (Integer.parseInt(oldValue.toString()) < Integer.parseInt(newValue.toString())) {
+                    total += Menu.searchDishByName(((CheckBox) getNodeByRowColumnIndex(GridPane.getRowIndex(spinner), 
+                        GridPane.getColumnIndex(spinner) - 1, dishScrollGrid)).getText()).getPriceWihtoutTax();
+                }
+                else{                        
+                    total -= Menu.searchDishByName(((CheckBox) getNodeByRowColumnIndex(GridPane.getRowIndex(spinner),
+                            GridPane.getColumnIndex(spinner) - 1, dishScrollGrid)).getText()).getPriceWihtoutTax();                    
+                }
+                totalText.setText("Total: ¢" + String.valueOf(total));                
             });
         }
     }
 
     private void fillDrinkScrollPane() {
         totalText.setText("");
-        drinkScrollGrid.setMinSize(2, 2);
         ArrayList<String> auxiliar = new ArrayList<>();
-        int i = 0;
+        int i = 0;        
         for(Drink drink : Menu.getDRINKS()){
-            CheckBox checkBox = new CheckBox(drink.getName());            
-            drinkScrollGrid.add(checkBox,0,i);            
+            CheckBox checkBox = new CheckBox(drink.getName());
+            drinkScrollGrid.add(checkBox,0,i);  
+            
             Spinner spinner = new Spinner(1, 10, 1);
-            spinner.setId(checkBox.getText());       //CREACIÓN Y MANEJO DEL SPINNER
-            spinner.setDisable(true);
+            spinner.setId(checkBox.getText());    //CREACIÓN Y MANEJO DEL SPINNER
+            spinner.setDisable(true);            
             drinkScrollGrid.add(spinner,1,i); 
             
-            i += 1;
+            i += 1;            
             checkBox.setOnAction((ActionEvent e) ->{
-                if(checkBox.isSelected()){
-                   seeFoodAndDrinksAdded.appendText(drink.getName() + "\n");
-                   total += Menu.searchDrink(drink.getName()).getPrice(); //se aumenta el total
-                   
-                   //desactiva el spinner correspondiente al platillo
-                    drinkScrollGrid.getChildren().stream().forEach((Node tmp) -> {
-                        if(tmp instanceof Spinner) // se verifica la instancia, ya que los checkbox no poseen ID
-                            if(tmp.getId().equals(checkBox.getText()))                       
-                                tmp.setDisable(false);                                                    
-                    });
-                }
-                else{
+                if(checkBox.isSelected()){                   
+                    seeFoodAndDrinksAdded.appendText(drink.getName() + "\n");
+                    
                     //activa el spinner correspondiente al platillo
                     drinkScrollGrid.getChildren().stream().forEach((Node tmp) -> {
                         if(tmp instanceof Spinner) // se verifica la instancia, ya que los checkbox no poseen ID
-                            if(tmp.getId().equals(checkBox.getText())){                      
-                                tmp.setDisable(true);
-                                ((Spinner) tmp).decrement(Integer.parseInt(((Spinner)tmp).getValue().toString())); //funciona como un reset
+                            if(tmp.getId().equals(checkBox.getText()))  {                     
+                                tmp.setDisable(false);      
+                                total += Menu.searchDrink(checkBox.getText()).getPrice()
+                                        * Integer.parseInt(((Spinner)tmp).getValue().toString()); //se multiplica por el valor del spinner
                             }
-                            
-                    });
+                    });                    
+                }
+                else{                    
                     /**
                      * Para 'borrar' el elemento deseleccionado
                      */
-                    for(String string : seeFoodAndDrinksAdded.getText().split("\\n")){
+                    for(String string : seeFoodAndDrinksAdded.getText().split("\\n")){ // se parsea el contenido del textArea
                         if(!string.equals(checkBox.getText()))
                             auxiliar.add(string);
-                        else
-                            total -= Menu.searchDrink(string).getPrice(); // se disminuye el total 
+                        
+                        else{   
+                            //desactiva el spinner correspondiente al platillo
+                            drinkScrollGrid.getChildren().stream().forEach((Node tmp) -> {
+                            if(tmp instanceof Spinner) // se verifica la instancia, ya que los checkbox no poseen ID
+                                if(tmp.getId().equals(checkBox.getText())){   
+                                    if(Integer.parseInt(((Spinner) tmp).getValue().toString()) > 1) //se le suma por el problema de restar 
+                                        total += Menu.searchDrink(checkBox.getText()).getPrice(); //el valor del platillo o bebida
+                                    total -= Menu.searchDrink(checkBox.getText()).getPrice() *
+                                            Integer.parseInt(((Spinner)tmp).getValue().toString()); //se disminuye                                                                                                            
+                                    ((Spinner) tmp).getValueFactory().setValue(1);
+                                    tmp.setDisable(true); 
+                                    
+                                }                            
+                            });
+                        }
                     }
-                    
                     // se limpia el textArea
                     seeFoodAndDrinksAdded.clear();
                     /**
-                     * Para actualiza el textarea                     
+                     * Para actualizar el textarea                     
                      */                   
-                    for(String string : auxiliar){
-                        seeFoodAndDrinksAdded.appendText(string + "\n");                        
-                    }
+                    for(String string : auxiliar)
+                        seeFoodAndDrinksAdded.appendText(string + "\n");
+                    
                     // se limpia el ArrayList también
-                    auxiliar.clear();                                          
+                    auxiliar.clear();                    
                 }   
                 totalText.setText("Total: ¢" + String.valueOf(total));
             });
+            
+            /**
+             * Método para manejo de incremento - decremento del spinner
+             */
+            spinner.valueProperty().addListener((ObservableValue observable, Object oldValue, Object newValue) -> {
+                if (Integer.parseInt(oldValue.toString()) < Integer.parseInt(newValue.toString())) {
+                    total += Menu.searchDrink(((CheckBox) getNodeByRowColumnIndex(GridPane.getRowIndex(spinner), 
+                        GridPane.getColumnIndex(spinner) - 1, drinkScrollGrid)).getText()).getPrice();
+                }
+                else    
+                    total -= Menu.searchDrink(((CheckBox) getNodeByRowColumnIndex(GridPane.getRowIndex(spinner),
+                            GridPane.getColumnIndex(spinner) - 1, drinkScrollGrid)).getText()).getPrice();
+                
+                totalText.setText("Total: ¢" + String.valueOf(total));                
+            });
         }
         
+    }
+    
+    public void onSearchDish(){
+        
+    }
+    
+    public void onSearchDrink(){
+        
+    }
+    
+    public Node getNodeByRowColumnIndex (final int row, final int column, GridPane gridPane) {
+        for (Node node : gridPane.getChildren()) {
+            if (GridPane.getColumnIndex(node) == column && GridPane.getRowIndex(node) == row) {
+                return node;
+            }
+        }
+        return null;
     }
 }

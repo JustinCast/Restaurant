@@ -14,6 +14,7 @@ import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Side;
 import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
@@ -23,12 +24,14 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceDialog;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.ContextMenu;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.text.Text;
+import javafx.stage.WindowEvent;
 import javax.swing.JOptionPane;
 import restaurant_service.Dish;
 import restaurant_service.Drink;
@@ -53,8 +56,12 @@ public class EmergentTakingOrderController implements Initializable {
     @FXML private TextField textFieldSearchDrink;
     @FXML private Button btnSearchDish;
     @FXML private Button btnSearchDrink;
-    @FXML private ContextMenu dishContextMenu;
-    @FXML private ContextMenu drinkContextMenu;
+    private final ContextMenu dishContextMenu = new ContextMenu();
+    private final ContextMenu drinkContextMenu = new ContextMenu();
+    private final MenuItem foundDish = new MenuItem();
+    private final MenuItem notFoundDish = new MenuItem("Platillo no encontrado");
+    private final MenuItem foundDrink = new MenuItem();
+    private final MenuItem notFoundDrink = new MenuItem("Bebida no encontrada");
     private int total = 0;
     /**
      * Initializes the controller class.
@@ -78,6 +85,12 @@ public class EmergentTakingOrderController implements Initializable {
                 + " -fx-background-radius: 30; background-position: center");
         btnSearchDrink.setStyle("-fx-background-image: url('/UI/images/search.png'); -fx-background-repeat: no-repeat;"
                 + " -fx-background-radius: 30; background-position: center");
+        foundDish.setVisible(false);
+        notFoundDish.setVisible(false);
+        foundDrink.setVisible(false);
+        notFoundDrink.setVisible(false);
+        dishContextMenu.getItems().addAll(foundDish, notFoundDish);
+        drinkContextMenu.getItems().addAll(foundDrink, notFoundDrink);
 
     }    
     
@@ -320,11 +333,39 @@ public class EmergentTakingOrderController implements Initializable {
     }
     
     public void onSearchDish(){
-        
+        textFieldSearchDish.setContextMenu(dishContextMenu);
+        Dish dish = Menu.searchDishTolower(textFieldSearchDish.getText());               
+        if(dish != null){
+            foundDish.setText(dish.getDishName());
+            foundDish.setVisible(true);
+            notFoundDish.setVisible(false);
+        }            
+        else{            
+            notFoundDish.setVisible(true);
+            foundDish.setVisible(false);
+        }
+        dishContextMenu.setOnShowing((WindowEvent e) -> {
+           
+        });        
+        dishContextMenu.show(textFieldSearchDish, Side.BOTTOM, 0, 0);
     }
     
     public void onSearchDrink(){
-        
+        textFieldSearchDrink.setContextMenu(drinkContextMenu);
+        Drink drink = Menu.searchDrinkTolower(textFieldSearchDrink.getText());               
+        if(drink != null){
+            foundDrink.setText(drink.getName());
+            foundDrink.setVisible(true);
+            notFoundDrink.setVisible(false);
+        }            
+        else{            
+            notFoundDrink.setVisible(true);
+            foundDrink.setVisible(false);
+        }
+        drinkContextMenu.setOnShowing((WindowEvent e) -> {
+           
+        });        
+        drinkContextMenu.show(textFieldSearchDrink, Side.BOTTOM, 0, 0);
     }
     
     public Node getNodeByRowColumnIndex (final int row, final int column, GridPane gridPane) {

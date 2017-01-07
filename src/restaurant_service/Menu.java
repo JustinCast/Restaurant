@@ -55,12 +55,26 @@ public final class Menu {
         return null;
     }
     
+    public static Dish searchDishTolower(String name){
+        for(Dish dish : DISHES){
+            if(dish.getDishName().toLowerCase().equals(name.toLowerCase()))
+                return dish;
+        }
+        return null;
+    }
     
     
     //Search the drink by its name | returns null if not found
     public static Drink searchDrink(String drinkName){
         for(Drink drink : DRINKS)
             if(drink.getName().equals(drinkName))
+                return drink;
+        return null;
+    }
+    
+    public static Drink searchDrinkTolower(String drinkName){
+        for(Drink drink : DRINKS)
+            if(drink.getName().toLowerCase().equals(drinkName.toLowerCase()))
                 return drink;
         return null;
     }

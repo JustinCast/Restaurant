@@ -1,10 +1,14 @@
 
 package UI;
 
+import com.jfoenix.controls.JFXComboBox;
+import com.jfoenix.controls.JFXRadioButton;
 import employees.Chef;
 import employees.Employee;
 import employees.Waiter;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import javafx.collections.FXCollections;
@@ -18,12 +22,17 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.ChoiceDialog;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.RadioButton;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextInputDialog;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import javax.swing.JOptionPane;
 import restaurant_service.AllPayment;
@@ -66,47 +75,59 @@ public class InWaitController implements Initializable {
     }
     
     public void addToOrder() throws Exception{
-        int order_Number  = Integer.parseInt(JOptionPane.showInputDialog(null,"Ingrese el numero de orden"));
+        List orderNums = new ArrayList<>();
+        for(Order order : Restaurant.getTAKEN_ORDERS())
+            orderNums.add(order.getOrderNumber());
+        //Se crea el choiceDialog
+        ChoiceDialog addToOderDialog = new ChoiceDialog("Numero de orden ", orderNums);
+        addToOderDialog.setTitle("Agregar a orden");
+        addToOderDialog.setHeaderText("Selección");
+        addToOderDialog.initOwner((Stage) takenOrders.getScene().getWindow());
         
-        if(Restaurant.searchTakenOrder(order_Number) == null)
-            JOptionPane.showMessageDialog(null, "¡El numero de orden no existe!");
-        else{
-            int opc = 1;
-            int aux = 0;
-            while(opc == 1){
-                int opcAux = Integer.parseInt(JOptionPane.showInputDialog(null,"Agregar\n1)Platillo\n2)Bebida"));
-                if(opcAux == 1){
-                    int dishNumber = Integer.parseInt(JOptionPane.showInputDialog(null,"Numero de plato"));
-                    Dish dish = Menu.searchDish(dishNumber);
-                    if(dish == null)
-                        JOptionPane.showMessageDialog(null,"¡El platillo no ha sido encontrado!");
-                    else{
-                        Restaurant.searchTakenOrder(order_Number).setDishes(dish);
-                        aux = 1;
+        //Se agrega el 'Optional´para poder obtener el resultado
+        Optional result = addToOderDialog.showAndWait();
+        if(result.isPresent()){
+            Order order = Restaurant.searchTakenOrder((int) result.get());
+            List<String> dishOrDrink = new ArrayList();
+            dishOrDrink.add("Platillo");
+            dishOrDrink.add("Bebida");
+            ChoiceDialog<String> dishOrDrinkDialog = new ChoiceDialog<>("Elemento a agregar", dishOrDrink);
+            dishOrDrinkDialog.setTitle("Agregar");
+            dishOrDrinkDialog.initOwner((Stage) takenOrders.getScene().getWindow());
+            Optional<String> resultFOD = dishOrDrinkDialog.showAndWait();
+            if(resultFOD.isPresent()){
+                if(resultFOD.get().equals("Platillo")){
+                    List<String> dishNames = new ArrayList<>();
+                    for(Dish dish : Menu.getDISHES())
+                        dishNames.add(dish.getDishName());
+                    ChoiceDialog<String> addNewDish = new ChoiceDialog<>("Platillo", dishNames);
+                    addNewDish.setTitle("Agregar");
+                    addNewDish.setHeaderText("Agregue un platillo");
+                    addNewDish.initOwner((Stage) takenOrders.getScene().getWindow());
+                    Optional<String> selectedDish = addNewDish.showAndWait();
+                    if(selectedDish.isPresent()){
+                        order.setDISHES(Menu.searchDishByName(selectedDish.get()));
+                        JOptionPane.showMessageDialog(null, "Platillo agregado con éxito");
                     }
-                }
+                }               
                 else{
-                    String drinkName = "";
-                    while(drinkName.length() == 0)     
-                        drinkName = JOptionPane.showInputDialog(null,"Ingrese el nombre de la bebida");
-                    
-                    Drink drink = Menu.searchDrink(drinkName);
-                    if(drink == null)
-                        JOptionPane.showMessageDialog(null, "¡La bebida no ha sido encontrada!");
-                    else{
-                        Restaurant.searchTakenOrder(order_Number).setDrink(drink);
-                        aux = 1;
+                    List<String> drinkNames = new ArrayList<>();
+                    for(Drink drink : Menu.getDRINKS())
+                        drinkNames.add(drink.getName());
+                    ChoiceDialog<String> addNewDrink = new ChoiceDialog<>("Bebida", drinkNames);
+                    addNewDrink.setTitle("Agregar");
+                    addNewDrink.setHeaderText("Agregue una bebida");
+                    addNewDrink.initOwner((Stage) takenOrders.getScene().getWindow());
+                    Optional<String> selectedDrink = addNewDrink.showAndWait();
+                    if(selectedDrink.isPresent()){
+                        order.setDrink(Menu.searchDrink(selectedDrink.get()));
+                        JOptionPane.showMessageDialog(null, "Bebida agregada con éxito");
                     }
                 }
-                
-                opc = Integer.parseInt(JOptionPane.showInputDialog(null,"¿Desea agregar otro platillo o bebida?\n"
-                        + "1)Si\n2)No"));
+                    
             }
-            if(aux == 1)
-                JOptionPane.showMessageDialog(null, "Orden tomada");
-            loadTakenOrders();
         }
-        closeButtonAction();
+           
     }
     
     public void seeOrders(){
@@ -124,129 +145,37 @@ public class InWaitController implements Initializable {
             JOptionPane.showMessageDialog(null,"No hay ordenes tomadas");
     }
     
-    public void cancelBill() throws Exception{
-        if(Restaurant.getPREPARED_ORDERS().isEmpty()){
+    public void cancelBill()throws Exception{
+        System.out.println("Entró!");
+        if(Restaurant.getPREPARED_ORDERS().isEmpty() == true){
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("Información");
             alert.setContentText("¡Aún no hay órdenes preparadas!");
-            alert.showAndWait();
-            return;
+            alert.showAndWait();            
         }
-        int order_Number = Integer.parseInt(JOptionPane.showInputDialog(null,"Ingrese el numero de orden"));
-        
-        Order order = Restaurant.searchPreparedOrder(order_Number);
-        if(order == null)
-            JOptionPane.showMessageDialog(null, "La orden no ha sido encontrada");
         else{
-            int payForm = Integer.parseInt(JOptionPane.showInputDialog(null,"Forma de pago\n1)Individual\n"
-                    + "2)Separado(dos personas)\n3)En grupo"));
-            switch(payForm){
-                case 1:
-                    Customer customer = new Customer();
-                    TextInputDialog dialog = new TextInputDialog("ID Cliente");
-                    dialog.setTitle("Facturacion");
-                    dialog.setHeaderText("Factura Compra");
-                    dialog.setContentText("Ingrese el ID del cliente:");
-                    Image image = new Image(getClass().getResource("/UI/images/invoice.png").toExternalForm());
-                    ImageView imageView = new ImageView(image);
-                    dialog.setGraphic(imageView);
-                    // Traditional way to get the response value.
-                    Optional<String> result = dialog.showAndWait();
-                    if (result.isPresent()){
-                        customer.setID(Integer.parseInt(result.get()));
-                        customer.setRecurrence(1);
-                            
-                    }
-                    
-                    TextInputDialog dialog2 = new TextInputDialog("ID Cliente");
-                    dialog2.setTitle("Facturacion");
-                    dialog2.setHeaderText("Factura Compra");
-                    dialog2.setContentText("Ingrese el el nombre del cliente:");
-                    Image image2 = new Image(getClass().getResource("/UI/images/invoice.png").toExternalForm());
-                    ImageView imageView2 = new ImageView(image2);
-                    dialog2.setGraphic(imageView2);
-                    // Traditional way to get the response value.
-                    Optional<String> result2 = dialog2.showAndWait();
-                    if (result2.isPresent()){
-                        customer.setName(result2.get());
-                    }
-                    order.setCustomers(customer);
-                    WayToPay individual = new AllPayment((float) 0.13, (float) 0.16, order);
-                    JOptionPane.showMessageDialog(null, "Lo correspondiente a pagar es ¢" + individual.CalculateTheCount());
-                    Restaurant.setCANCELLED_ORDERS(order);
-                    Restaurant.getPREPARED_ORDERS().remove(order);
-                    Restaurant.getBUSY_TABLES().remove(order.getTable());
-                    break;
-                case 2:
-                    Customer customer1 = new Customer();
-                    TextInputDialog dialog3 = new TextInputDialog("ID Cliente");
-                    dialog3.setTitle("Facturacion");
-                    dialog3.setHeaderText("Factura Compra");
-                    dialog3.setContentText("Ingrese el ID del cliente:");
-                    Image image3 = new Image(getClass().getResource("/UI/images/invoice.png").toExternalForm());
-                    ImageView imageView3 = new ImageView(image3);
-                    dialog3.setGraphic(imageView3);
-                    // Traditional way to get the response value.
-                    Optional<String> result3 = dialog3.showAndWait();
-                    if (result3.isPresent()){
-                        customer1.setID(Integer.parseInt(result3.get()));
-                        customer1.setRecurrence(1);
-                            
-                    }
-                    order.setCustomers(customer1);
-                    
-                    Customer customer2 = new Customer();
-                    TextInputDialog dialog4 = new TextInputDialog("ID Cliente");
-                    dialog4.setTitle("Facturacion");
-                    dialog4.setHeaderText("Factura Compra");
-                    dialog4.setContentText("Ingrese el ID del cliente:");
-                    Image image4 = new Image(getClass().getResource("/UI/images/invoice.png").toExternalForm());
-                    ImageView imageView4 = new ImageView(image4);
-                    dialog4.setGraphic(imageView4);
-                    // Traditional way to get the response value.
-                    Optional<String> result4 = dialog4.showAndWait();
-                    if (result4.isPresent()){
-                        customer2.setID(Integer.parseInt(result4.get()));
-                        customer2.setRecurrence(1);
-                            
-                    }
-                    order.setCustomers(customer2);
-                    
-                    WayToPay separate = new SeparatePayment((float) 0.13, (float) 0.16, order);
-                    JOptionPane.showMessageDialog(null, "Lo correspondiente a pagar por persona es ¢" + separate.CalculateTheCount());
-                    Restaurant.setCANCELLED_ORDERS(order);
-                    Restaurant.getPREPARED_ORDERS().remove(order);
-                    Restaurant.getBUSY_TABLES().remove(order.getTable());
-                    break;
-                case 3:
-                    int persons = Integer.parseInt(JOptionPane.showInputDialog(null,"¿Cuántas personas"
-                            + " harán el pago?"));
-                    WayToPay inGroup = new GroupPayment((float) 0.13, (float) 0.16, order, persons);
-                    while(persons > 0){
-                        Customer customer3 = new Customer();
-                        TextInputDialog dialog5 = new TextInputDialog("ID Cliente");
-                        dialog5.setTitle("Facturacion");
-                        dialog5.setHeaderText("Factura Compra");
-                        dialog5.setContentText("Ingrese el ID del cliente:");
-                        Image image5 = new Image(getClass().getResource("/UI/images/invoice.png").toExternalForm());
-                        ImageView imageView5 = new ImageView(image5);
-                        dialog5.setGraphic(imageView5);
-                        // Traditional way to get the response value.
-                        Optional<String> result5 = dialog5.showAndWait();
-                        if (result5.isPresent()){
-                            customer3.setID(Integer.parseInt(result5.get()));
-                            customer3.setRecurrence(1);
-
-                        }
-                        order.setCustomers(customer3);
-                        persons--;
-                    }
-                    JOptionPane.showMessageDialog(null, "Lo correspondiente a pagar por persona es ¢" + inGroup.CalculateTheCount());
-                    Restaurant.setCANCELLED_ORDERS(order);
-                    Restaurant.getPREPARED_ORDERS().remove(order);
-                    Restaurant.getBUSY_TABLES().remove(order.getTable());
-                    break;
-            }
+            ComboBox preparedOrdersNums = new ComboBox();
+            preparedOrdersNums.setValue("Ordenes por Cancelar");
+            for(Order order : Restaurant.getPREPARED_ORDERS())
+                preparedOrdersNums.getItems().add(order.getOrderNumber());
+            ToggleGroup toggleGroup = new ToggleGroup();
+            RadioButton individualRdio = new RadioButton("Individual");
+            RadioButton inPairsRdio = new RadioButton("En pareja");
+            RadioButton inGroups = new RadioButton("En Grupo");
+            toggleGroup.getToggles().addAll(individualRdio, inPairsRdio, inGroups);
+            
+            GridPane cancelingGP = new GridPane();
+            cancelingGP.add(preparedOrdersNums, 0, 0);
+            cancelingGP.add(individualRdio, 0, 1);
+            cancelingGP.add(inPairsRdio, 1, 1);
+            cancelingGP.add(inGroups, 2, 1);
+            
+            Alert cancellingDialog = new Alert(AlertType.INFORMATION);
+            cancellingDialog.initOwner((Stage) takenOrders.getScene().getWindow());
+            cancellingDialog.setTitle("Cuenta");
+            cancellingDialog.setHeaderText("Cancelación");
+            cancellingDialog.getDialogPane().setContent(cancelingGP);
+            cancellingDialog.showAndWait();
         }
     }
     

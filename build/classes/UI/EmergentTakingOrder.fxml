@@ -19,7 +19,7 @@
 <AnchorPane id="AnchorPane" fx:id="emergentPane" prefHeight="573.0" prefWidth="655.0" stylesheets="@styles/emergentCss.css" xmlns="http://javafx.com/javafx/8.0.102" xmlns:fx="http://javafx.com/fxml/1" fx:controller="UI.EmergentTakingOrderController">
    <children>
       <TextArea fx:id="seeFoodAndDrinksAdded" layoutX="160.0" layoutY="344.0" prefHeight="151.0" prefWidth="336.0" />
-      <JFXButton buttonType="RAISED" layoutX="224.0" layoutY="508.0" ripplerFill="WHITE" style="-fx-background-color: #138D75;" text="Aceptar" textFill="WHITE">
+      <JFXButton buttonType="RAISED" layoutX="224.0" layoutY="508.0" onAction="#onAcceptBtnPressed" ripplerFill="WHITE" style="-fx-background-color: #138D75;" text="Aceptar" textFill="WHITE">
          <font>
             <Font size="14.0" />
          </font>
@@ -102,5 +102,6 @@
             </Pane>
          </content>
       </ScrollPane>
+      <Button fx:id="BackBtn" layoutX="24.0" layoutY="22.0" mnemonicParsing="false" onAction="#onBtnBackPressed" prefHeight="29.0" prefWidth="39.0" />
    </children>
 </AnchorPane>

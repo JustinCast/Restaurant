@@ -58,7 +58,7 @@ public class InitController implements Initializable {
             alert.showAndWait();
             return;
         }            
-//        try{
+        try{
             closeButtonAction();
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("TakingOrder.fxml"));
             Parent root1 = (Parent) fxmlLoader.load();
@@ -66,8 +66,21 @@ public class InitController implements Initializable {
             stage.getIcons().add(new Image(getClass().getResourceAsStream("images/icono.png")));
             stage.setScene(new Scene(root1));
             stage.show();
-//        }
-//        catch(Exception e){}
+        }
+        catch(Exception e){}
+    }
+    
+    public void openMenu() throws Exception{
+        try{           
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("Menu.fxml"));
+            Parent root1 = (Parent) fxmlLoader.load();
+            Stage stage = new Stage();
+            stage.getIcons().add(new Image(getClass().getResourceAsStream("images/icono.png")));
+            stage.setScene(new Scene(root1));
+            stage.show();
+        }
+        catch(Exception e){}
+        closeButtonAction();
     }
     
     public void developer(){

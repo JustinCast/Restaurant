@@ -10,12 +10,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Side;
 import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonBar;
@@ -28,9 +33,11 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.text.Text;
+import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import javax.swing.JOptionPane;
 import restaurant_service.Dish;
@@ -56,6 +63,7 @@ public class EmergentTakingOrderController implements Initializable {
     @FXML private TextField textFieldSearchDrink;
     @FXML private Button btnSearchDish;
     @FXML private Button btnSearchDrink;
+    @FXML private Button BackBtn;
     private final ContextMenu dishContextMenu = new ContextMenu();
     private final ContextMenu drinkContextMenu = new ContextMenu();
     private final MenuItem foundDish = new MenuItem();
@@ -72,6 +80,10 @@ public class EmergentTakingOrderController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         emergentPane.setId("emergent");
         emergentPane.getStyleClass().add("emergent");
+        BackBtn.setStyle("-fx-background-image: url('/UI/images/back.png'); -fx-background-repeat: no-repeat; "
+                + "-fx-background-position: center");
+//        BackBtn.setId("BackBtn");
+//        BackBtn.getStyleClass().add("BackBtn");
         /**
          * Ciclo para agregar los numeros de ordenes
          * al ComboBox que será desplegado
@@ -331,14 +343,26 @@ public class EmergentTakingOrderController implements Initializable {
         }
         
     }
-    
+    /**
+     * Método encargado de presentar el resultado de la búsqueda del platillo
+     */
     public void onSearchDish(){
         textFieldSearchDish.setContextMenu(dishContextMenu);
         Dish dish = Menu.searchDishTolower(textFieldSearchDish.getText());               
         if(dish != null){
-            foundDish.setText(dish.getDishName());
-            foundDish.setVisible(true);
             notFoundDish.setVisible(false);
+            foundDish.setText(dish.getDishName());
+            foundDish.setVisible(true);            
+            foundDish.setOnAction(e-> {
+               dishScrollGrid.getChildren().stream().forEach((Node tmp) -> {
+                   if(tmp instanceof CheckBox && ((CheckBox)tmp).getText().equals(foundDish.getText())){
+                       seeFoodAndDrinksAdded.appendText(((CheckBox)tmp).getText());
+                       total += Menu.searchDishByName(foundDish.getText()).getPriceWihtoutTax();
+                       totalText.setText("Total: ¢" + String.valueOf(total));
+                       ((CheckBox)tmp).setSelected(true);
+                   }
+               });
+            });
         }            
         else{            
             notFoundDish.setVisible(true);
@@ -350,22 +374,113 @@ public class EmergentTakingOrderController implements Initializable {
         dishContextMenu.show(textFieldSearchDish, Side.BOTTOM, 0, 0);
     }
     
+    /**
+     * Método encargado de presentar el resultado de la búsqueda de la bebida
+     */
     public void onSearchDrink(){
         textFieldSearchDrink.setContextMenu(drinkContextMenu);
         Drink drink = Menu.searchDrinkTolower(textFieldSearchDrink.getText());               
         if(drink != null){
+            notFoundDrink.setVisible(false);
             foundDrink.setText(drink.getName());
             foundDrink.setVisible(true);
-            notFoundDrink.setVisible(false);
+            foundDrink.setOnAction(e-> {
+               drinkScrollGrid.getChildren().stream().forEach((Node tmp) -> {
+                   if(tmp instanceof CheckBox && ((CheckBox)tmp).getText().equals(foundDrink.getText())){
+                       seeFoodAndDrinksAdded.appendText(((CheckBox)tmp).getText());
+                       total += Menu.searchDrink(foundDrink.getText()).getPrice();
+                       totalText.setText("Total: ¢" + String.valueOf(total));
+                       ((CheckBox)tmp).setSelected(true);
+                   }
+               });
+            });
         }            
         else{            
-            notFoundDrink.setVisible(true);
+            notFoundDrink.setVisible(true); 
             foundDrink.setVisible(false);
         }
         drinkContextMenu.setOnShowing((WindowEvent e) -> {
            
         });        
         drinkContextMenu.show(textFieldSearchDrink, Side.BOTTOM, 0, 0);
+    }
+    
+    /**
+     * 
+     * Método encargado de presentar el archivo FXML si se presiona el btn Back
+     * @throws java.lang.Exception
+     */
+    public void onBtnBackPressed() throws Exception{
+        if(seeFoodAndDrinksAdded.getText().isEmpty() == false){
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.initOwner(BackBtn.getScene().getWindow());
+            alert.setHeaderText("¿Desea salir y perder la orden?");            
+            alert.showAndWait().ifPresent(response ->{
+                if(response == ButtonType.OK)
+                    try {
+                        openMenu();
+                } catch (Exception ex) {
+                    Logger.getLogger(EmergentTakingOrderController.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            });
+        }
+        else
+            openMenu();
+    }
+    
+    /**         
+     * Método encargado de presentar el archivo FXML si se presiona el btn Back
+     * @throws java.lang.Exception
+     *
+     */
+    private void openMenu() throws Exception{
+        try{
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("Menu.fxml"));
+            Parent root1 = (Parent) fxmlLoader.load();
+            Stage stage = new Stage();
+            stage.setScene(new Scene(root1));
+            stage.getIcons().add(new Image(getClass().getResourceAsStream("images/icono.png")));
+            stage.setResizable(false);
+            stage.show();
+        }catch(Exception e){}
+     
+        closeButtonAction();
+    }
+    
+    /**
+     * @throws java.lang.Exception
+     * Método encargado de la verificación en el ComboBox y el TextArea
+     */
+    public void onAcceptBtnPressed() throws Exception{
+        if(orderNumberCmbx.getSelectionModel().getSelectedItem() == null)
+            showErrorJOptionPane("Seleccione un número de orden");
+        else if(seeFoodAndDrinksAdded.getText().length() == 0)
+            showErrorJOptionPane("Debe añadir al menos un elemento a la orden");
+        else{
+            Dish dish;
+            Drink drink;
+            Order order = Restaurant.searchOrder(Integer.parseInt(orderNumberCmbx.getSelectionModel().getSelectedItem().toString()));          
+            for(String string : seeFoodAndDrinksAdded.getText().split("\\n")){
+                dish = Menu.searchDishByName(string);
+                if(dish != null)
+                    order.setDISHES(dish);
+                else{
+                    drink = Menu.searchDrink(string);
+                    order.setDrink(drink);
+                }                    
+            }
+            JOptionPane.showMessageDialog(null, "Orden tomada");
+            //Restaurant.setBUSY_TABLES(order.getTable());
+            //Restaurant.getPENDING_ATTEND().remove(order.getTable());
+            Restaurant.setTakenOrders(order);
+            Restaurant.getOrders().remove(order);
+            openMenu();
+        }
+    }
+    
+    public void closeButtonAction() throws Exception{
+        Stage stage = (Stage) BackBtn.getScene().getWindow();
+        stage.close();
     }
     
     public Node getNodeByRowColumnIndex (final int row, final int column, GridPane gridPane) {
@@ -375,5 +490,9 @@ public class EmergentTakingOrderController implements Initializable {
             }
         }
         return null;
+    }
+    
+    private void showErrorJOptionPane(String message){
+        JOptionPane.showMessageDialog(null, message);
     }
 }

@@ -1,0 +1,5 @@
+.root {
+    -fx-background-image: url("/UI/images/chef.jpg");
+    -fx-background-position: center;
+    -fx-background-repeat: no-repeat;
+}

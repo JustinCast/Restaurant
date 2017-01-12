@@ -8,7 +8,9 @@
   </information>
   <resources>
     <j2se version="1.6+" href="http://java.sun.com/products/autodl/j2se"/>
-    <jar href="Restaurant.jar" size="1676795" download="eager" />
+    <jar href="Restaurant.jar" size="1852758" download="eager" />
+    <jar href="lib\controlsfx-8.40.12.jar" size="996389" download="eager" />
+    <jar href="lib\controlsfx-samples-8.40.12.jar" size="665038" download="eager" />
     <jar href="lib\jfoenix.jar" size="2170180" download="eager" />
     <jar href="lib\mysql-connector-java-5.1.40-bin.jar" size="990927" download="eager" />
   </resources>

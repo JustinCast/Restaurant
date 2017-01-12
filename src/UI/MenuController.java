@@ -428,17 +428,21 @@ public final class MenuController implements Initializable {
     }
     
     public void openEmergentOrder()throws Exception{
-        try{
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("EmergentTakingOrder.fxml"));
-            Parent root1 = (Parent) fxmlLoader.load();
-            Stage stage = new Stage();
-            stage.setScene(new Scene(root1));
-            stage.getIcons().add(new Image(getClass().getResourceAsStream("images/icono.png")));
-            stage.setResizable(false);
-            stage.show();
-        }catch(Exception e){}
-        loader = 1;
-        closeButtonAction();
+        if(Restaurant.getOrders().isEmpty())            
+            JOptionPane.showMessageDialog(null, "Primero debe agregar al menos una orden");
+        else{
+            try{
+                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("EmergentTakingOrder.fxml"));
+                Parent root1 = (Parent) fxmlLoader.load();
+                Stage stage = new Stage();
+                stage.setScene(new Scene(root1));
+                stage.getIcons().add(new Image(getClass().getResourceAsStream("images/icono.png")));
+                stage.setResizable(false);
+                stage.show();
+            }catch(Exception e){}
+            loader = 1;
+            closeButtonAction();
+        }
     }
     
     public void seeOrders(){

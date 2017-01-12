@@ -2,19 +2,14 @@
 package UI;
 
 import com.jfoenix.controls.JFXTextArea;
-import com.jfoenix.controls.JFXTextField;
 import employees.Chef;
 import employees.Employee;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Alert;
-import javafx.scene.control.Tooltip;
-import javafx.scene.image.Image;
+import javafx.scene.control.ComboBox;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import restaurant_service.Order;
@@ -27,31 +22,18 @@ import restaurant_service.Restaurant;
  */
 public class ChefController implements Initializable {
    @FXML private JFXTextArea ordersToPrepare;
-   @FXML private JFXTextField preparOrder;
-   @FXML private JFXTextField chefID;
+   @FXML private ComboBox takenOrdersNums;
+   @FXML private ComboBox chefs;
    @FXML private AnchorPane preparingWindow; 
-   @FXML private Tooltip ordersTip;
-   @FXML private Tooltip chefsTip;
    
     @Override
-    public void initialize(URL url, ResourceBundle rb) {
-        preparOrder.setStyle("-fx-text-inner-color: white;");
-        chefID.setStyle("-fx-text-inner-color: white;");
+    public void initialize(URL url, ResourceBundle rb) {        
         preparingWindow.setId("preparingWindow");
         preparingWindow.getStyleClass().add("preparingWindow");
         setOrders();
-        String out = "";
-        for(Order order : Restaurant.getTAKEN_ORDERS())
-            out += order.getOrderNumber() + "\n";
-        ordersTip.setText(out);
-        out = "";
-        for(Employee employee : Restaurant.getEmployees()){
-            if(employee instanceof Chef)
-               out += employee.getName() + ": " + employee.getID() + "\n";
-        }
-        chefsTip.setText(out);
-       
-           
+        loadTakenOrders();
+        loadChefs();
+  
     }    
     /**
      * Method to show the orders that the chef must prepare
@@ -77,10 +59,10 @@ public class ChefController implements Initializable {
             closeButtonAction();
             return;
         }
-        if(chefID.getText().length() != 0 && preparOrder.getText().length() != 0){
-            Employee employee = Restaurant.searchEmployee(Integer.parseInt(chefID.getText()));
+        if(chefs.getSelectionModel().getSelectedItem() != null && takenOrdersNums.getSelectionModel().getSelectedItem() != null){
+            Employee employee = Restaurant.searchEmployeeByName(chefs.getSelectionModel().getSelectedItem().toString());
             if(employee instanceof Chef){
-                Order order = Restaurant.searchTakenOrder(Integer.parseInt(preparOrder.getText()));
+                Order order = Restaurant.searchTakenOrder(Integer.parseInt(takenOrdersNums.getSelectionModel().getSelectedItem().toString()));
                 if(order == null){
                     Alert alert = new Alert(Alert.AlertType.ERROR);
                     alert.setTitle("Ordenes");
@@ -115,20 +97,19 @@ public class ChefController implements Initializable {
         }
     }
     
-    public void seeChefs(){
-         try{
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("Employees.fxml"));
-            Parent root1 = (Parent) fxmlLoader.load();
-            Stage stage = new Stage();
-            stage.setScene(new Scene(root1));
-            stage.getIcons().add(new Image(getClass().getResourceAsStream("images/icono.png")));
-            stage.setResizable(false);
-            stage.show();
-        }catch(Exception e){}
+    private void loadTakenOrders(){
+        for(Order order : Restaurant.getTAKEN_ORDERS())
+            takenOrdersNums.getItems().add(order.getOrderNumber());
+    }
+    
+    private void loadChefs(){
+        for(Employee employee : Restaurant.getEmployees())
+            if(employee instanceof Chef)
+                chefs.getItems().add(employee.getName());
     }
     
     public void closeButtonAction() throws Exception{
-        Stage stage = (Stage) chefID.getScene().getWindow();
+        Stage stage = (Stage) chefs.getScene().getWindow();
         stage.close();
     }
 }

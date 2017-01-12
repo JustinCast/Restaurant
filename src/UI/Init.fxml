@@ -1,17 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.text.*?>
-<?import com.jfoenix.controls.*?>
-<?import java.lang.*?>
-<?import java.net.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import com.jfoenix.controls.JFXButton?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
 
-<AnchorPane id="AnchorPane" fx:id="init" prefHeight="554.0" prefWidth="689.0" stylesheets="@styles/Home.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="UI.InitController">
+<AnchorPane id="AnchorPane" fx:id="init" prefHeight="554.0" prefWidth="689.0" stylesheets="@styles/Home.css" xmlns="http://javafx.com/javafx/8.0.102" xmlns:fx="http://javafx.com/fxml/1" fx:controller="UI.InitController">
    <children>
-      <JFXButton fx:id="btnTakeOrder" buttonType="RAISED" cancelButton="true" layoutX="294.0" layoutY="161.0" onAction="#openOrder" prefHeight="38.0" prefWidth="124.0" style="-fx-background-color: #EC7063;" text="Tomar Orden" textFill="WHITE">
+      <JFXButton fx:id="btnTakeOrder" buttonType="RAISED" cancelButton="true" layoutX="183.0" layoutY="158.0" onAction="#openOrder" prefHeight="38.0" prefWidth="124.0" style="-fx-background-color: #EC7063;" text="Tomar Orden" textFill="WHITE">
          <font>
             <Font size="17.0" />
          </font>
@@ -25,5 +20,10 @@
          <font>
             <Font size="15.0" />
          </font></JFXButton>
+      <JFXButton buttonType="RAISED" cancelButton="true" layoutX="405.0" layoutY="158.0" onAction="#openMenu" prefHeight="38.0" prefWidth="124.0" style="-fx-background-color: #EC7063;" text="Ir al Menu" textFill="WHITE">
+         <font>
+            <Font size="17.0" />
+         </font>
+      </JFXButton>
    </children>
 </AnchorPane>

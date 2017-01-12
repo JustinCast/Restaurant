@@ -3,12 +3,19 @@ package UI;
 
 import com.jfoenix.controls.JFXTextArea;
 import java.net.URL;
+import java.time.LocalDate;
+import java.time.MonthDay;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.TemporalAccessor;
 import java.util.ResourceBundle;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
+import javafx.scene.control.DateCell;
 import javafx.scene.control.DatePicker;
+import javafx.scene.control.Tooltip;
 import javafx.scene.text.Text;
+import javafx.util.Callback;
 import restaurant_service.Dish;
 import restaurant_service.Drink;
 import restaurant_service.Order;
@@ -36,7 +43,20 @@ public class ConsultingController implements Initializable  {
     @FXML private Text customersPerYear;
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-
+        final Callback<DatePicker, DateCell> dayCellFactory = (final DatePicker datePicker) -> new DateCell() {
+            @Override public void updateItem(LocalDate item, boolean empty) {
+                super.updateItem(item, empty);
+                
+                if (MonthDay.from(item).equals(MonthDay.of(9, 25))) {
+                    setTooltip(new Tooltip("Happy Birthday!"));
+                    setStyle("-fx-background-color: #F44336");
+                }
+                if (item.equals(LocalDate.now().plusDays(1))) {
+                    setStyle("-fx-background-color: #F44336");
+                }
+            }
+        };
+    dishesDate.setDayCellFactory(dayCellFactory);
     }
     
     public void loadSellDishes(){
